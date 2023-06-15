@@ -51,7 +51,7 @@ from nnunetv2.training.loss.dice import get_tp_fp_fn_tn, MemoryEfficientSoftDice
 from nnunetv2.training.lr_scheduler.polylr import PolyLRScheduler
 from nnunetv2.utilities.collate_outputs import collate_outputs
 from nnunetv2.utilities.default_n_proc_DA import get_allowed_n_proc_DA
-from nnunetv2.utilities.file_path_utilities import check_workers_busy
+from nnunetv2.utilities.file_path_utilities import check_workers_alive_and_busy
 from nnunetv2.utilities.get_network_from_plans import get_network_from_plans
 from nnunetv2.utilities.helpers import empty_cache, dummy_context
 from nnunetv2.utilities.label_handling.label_handling import convert_labelmap_to_one_hot, determine_num_input_channels
@@ -1100,6 +1100,7 @@ class nnUNetTrainer(object):
                                         self.inference_allowed_mirroring_axes)
 
         with multiprocessing.get_context("spawn").Pool(default_num_processes) as segmentation_export_pool:
+            worker_list = [i for i in segmentation_export_pool._pool]
             validation_output_folder = join(self.output_folder, 'validation')
             maybe_mkdir_p(validation_output_folder)
 
@@ -1119,13 +1120,14 @@ class nnUNetTrainer(object):
                 _ = [maybe_mkdir_p(join(self.output_folder_base, 'predicted_next_stage', n)) for n in next_stages]
 
             results = []
+
             for k in dataset_val.keys():
-                proceed = not check_workers_busy(segmentation_export_pool, results,
-                                                 allowed_num_queued=2 * len(segmentation_export_pool._pool))
+                proceed = not check_workers_alive_and_busy(segmentation_export_pool, worker_list, results,
+                                                 allowed_num_queued=2)
                 while not proceed:
                     sleep(0.1)
-                    proceed = not check_workers_busy(segmentation_export_pool, results,
-                                                     allowed_num_queued=2 * len(segmentation_export_pool._pool))
+                    proceed = not check_workers_alive_and_busy(segmentation_export_pool, worker_list, results,
+                                                     allowed_num_queued=2)
 
                 self.print_to_log_file(f"predicting {k}")
                 data, seg, properties = dataset_val.load_case(k)
