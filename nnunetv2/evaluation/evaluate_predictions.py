@@ -252,9 +252,9 @@ def evaluate_simple_entry_point():
 
 
 if __name__ == '__main__':
-    folder_ref = '/media/fabian/data/nnUNet_raw/Dataset004_Hippocampus/labelsTr'
-    folder_pred = '/home/fabian/results/nnUNet_remake/Dataset004_Hippocampus/nnUNetModule__nnUNetPlans__3d_fullres/fold_0/validation'
-    output_file = '/home/fabian/results/nnUNet_remake/Dataset004_Hippocampus/nnUNetModule__nnUNetPlans__3d_fullres/fold_0/validation/summary.json'
+    folder_ref = r'G:\nnUNetv2\nnUNet_raw_data\Dataset002_Segrap2023\labelsTr'
+    folder_pred = r'G:\nnUNetv2\nnUNet_trained_models\Dataset002_Segrap2023\nnUNetTrainer__nnUNetPlans__3d_fullres\fold_0\validation'
+    output_file = r'G:\nnUNetv2\nnUNet_trained_models\Dataset002_Segrap2023\nnUNetTrainer__nnUNetPlans__3d_fullres\fold_0\validation/summary.json'
     image_reader_writer = SimpleITKIO()
     file_ending = '.nii.gz'
     regions = labels_to_list_of_regions([1, 2])

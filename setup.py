@@ -19,7 +19,8 @@ setup(name='nnunetv2',
           "medpy",
           "scipy",
           "batchgenerators>=0.25",
-          "numpy",
+          "threadpoolctl==3.1.0" # threadpoolctl 2.2.0 will cause bugs in batchgenerators 0.25. batchgenerators will report "One or more background workers are no longer alive. Exiting. Please check the..."
+          "numpy==1.22.3", # numpy 1.24.3 will cause bugs in torch 2.0.0+cu117. The error message is "module 'numpy' has no attribute 'object'"
           "scikit-learn",
           "scikit-image>=0.19.3",
           "SimpleITK>=2.2.1",
